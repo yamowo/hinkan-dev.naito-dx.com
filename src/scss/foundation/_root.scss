@@ -1,0 +1,17 @@
+@charset "UTF-8";
+@use "../global" as *;
+/* =========================================================
+//  _root
+// ========================================================= */
+* {
+  font-feature-settings: "palt";
+}
+html {
+  // font-size: clamp(0.875rem, 0.667rem + 0.56vw, 1.125rem); //600-1320 14-18
+  font-size: clamp(0.875rem, 0.75rem + 0.33vw, 1rem); //600-1200 14-16
+}
+:root {
+  --swl-font_family: "游ゴシック体", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  // --swl-font_family-en-ja: "Roboto", "游ゴシック体", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  // --swl-font_weight: 600;
+}

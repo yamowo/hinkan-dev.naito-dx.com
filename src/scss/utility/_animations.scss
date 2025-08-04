@@ -1,0 +1,221 @@
+@charset "UTF-8";
+@use "../global" as *;
+/* =========================================================
+// animations
+// ========================================================= */
+// フェードアウト
+@-webkit-keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+// フェードインアウト
+@-webkit-keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+}
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+}
+// フェードイン レフト・フェードアウト ライト
+@-webkit-keyframes fadeInLeftOutRigt {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50px, 0, 0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate3d(-20px, 0, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate3d(-20px, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0px, 0, 0);
+  }
+}
+@keyframes fadeInLeftOutRigt {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50px, 0, 0);
+  }
+  30% {
+    opacity: 1;
+    transform: translate3d(-20px, 0, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate3d(-20px, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0px, 0, 0);
+  }
+}
+// フェードイン ライト・フェードアウト レフト
+@-webkit-keyframes fadeInRightOutLeft {
+  0% {
+    opacity: 0;
+    transform: translate3d(20px, 0, 0);
+  }
+  30% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+}
+@keyframes fadeInRightOutLeft {
+  0% {
+    opacity: 0;
+    transform: translate3d(20px, 0, 0);
+  }
+  30% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+}
+
+// クリップパスアニメーション
+@-webkit-keyframes clip-move {
+  to {
+    -webkit-clip-path: inset(0 0 0 0);
+            clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes clip-move {
+  to {
+    -webkit-clip-path: inset(0 0 0 0);
+            clip-path: inset(0 0 0 0);
+  }
+}
+
+// バーアニメーション
+@-webkit-keyframes passing-bar{
+	0% {
+		left: 0;
+		width: 0;
+	}
+	50% {
+		left: 0;
+		width: 100%;
+	}
+	51% {
+		left: 0;
+		width: 100%;
+	}
+	100% {
+		left: 100%;
+		width: 0;
+	}
+}
+@keyframes passing-bar{
+	0% {
+		left: 0;
+		width: 0;
+	}
+	50% {
+		left: 0;
+		width: 100%;
+	}
+	51% {
+		left: 0;
+		width: 100%;
+	}
+	100% {
+		left: 100%;
+		width: 0;
+	}
+}
+
+// ループレフト
+@-webkit-keyframes loopLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(var(--loop-width) * -6));
+  }
+}
+@keyframes loopLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(var(--loop-width) * -6));
+  }
+}
+
+// ループライト
+@-webkit-keyframes loopRight {
+  0% {
+    transform: translateX(calc(var(--loop-width) * -6 ));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes loopRight {
+  0% {
+    transform: translateX(calc(var(--loop-width) * -6 ));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+// ぽよぽよ
+@-webkit-keyframes poyopoyo {
+  0%, 40%, 60%, 80% {
+    transform: scale(1);
+  }
+  50%, 70% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes poyopoyo {
+  0%, 40%, 60%, 80% {
+    transform: scale(1);
+  }
+  50%, 70% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
