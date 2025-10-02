@@ -4,6 +4,10 @@
 // wp-core
 // ========================================================= */
 
+.top #content, .l-content {
+  padding-top: 0em;
+}
+
 h1 {
   margin-bottom: 1rem!important;
   font-size: 1.5em!important;
@@ -28,3 +32,6 @@ span.dots {
 // [class*=page-numbers].current, [class*=page-numbers].dots:hover {
 //   color: #fff;
 // }
+.p-breadcrumb {
+  display: none;
+}

@@ -35,11 +35,13 @@ add_action('template_redirect', function () {
 	// ページタイトル（SWELL系クラス）
 	echo '<h1 class="c-pageTitle"><span class="c-pageTitle__inner">';
 	if ( $is_report_archive ) {
-		post_type_archive_title();
+		// post_type_archive_title();
+		echo esc_html__('過去トラアーカイブ - 検索結果', 'default');
 	} elseif ( $is_report_tax ) {
 		single_term_title();
+		// echo esc_html__('過去トラアーカイブ - 検索結果', 'default');
 	} else {
-		echo esc_html__('不具合報告：検索結果', 'default');
+		echo esc_html__('過去トラアーカイブ - 検索結果', 'default');
 	}
 	echo '</span></h1>';
 

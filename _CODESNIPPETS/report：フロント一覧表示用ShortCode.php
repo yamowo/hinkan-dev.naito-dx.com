@@ -2,22 +2,24 @@
 /**
  * Shortcode: [report_list]
  * - 既定：発生日（降順）
- * - 見出し「発生日」をクリックで 昇順/降順 トグル（?rl_dir=asc|desc）
- * - アーカイブ/検索の条件（cpt_maker, s, post_type）を継承
- * - ページネーションは現URLのパスから再構築してクエリを一度だけ付与（&amp; 混入回避）
- * - 検索は「全角/半角カナ 非依存」に対応（このショートコード内WP_Queryにだけ適用）
+ * - 見出し「発生日」クリックで 昇順/降順 トグル（?rl_dir=asc|desc）
+ * - アーカイブ/検索の条件（s, post_type, あらゆる report 連携タクソノミー）を継承
+ * - VK FilterSearch のパラメータ（ID/slug, カンマ区切り/配列）も自動対応
+ * - ページネーションは現URLのパスから再構築してクエリを一度だけ付与（& 混入回避）
+ * - 検索は「全角/半角カナ 非依存」（このショートコード内の WP_Query にだけ適用）
+ * - ★ 総件数を data-total に出力し、H1（SWELL or Gutenberg）に（○○件）を追記
  *
  * 依存（任意）:
- * - ACF: acf_event_date（発生日）
- * - タクソノミー: cpt_maker
+ * - ACF: acf_event_date（発生日）, acf_attachment_file（受理票）
+ * - タクソノミー: cpt_maker（メーカー）ほか、report に紐づく公開タクソノミー
  *
  * メタキー:
  * - n_event_ts : 発生日のUNIXタイムスタンプ（秒）
  */
 
-/* ----------------------------------------
+/* ──────────────────────────────────
  * ACF値をUNIXタイムスタンプへ正規化
- * ---------------------------------------- */
+ * ────────────────────────────────── */
 if ( ! function_exists( 'n_normalize_date_to_ts' ) ) :
 function n_normalize_date_to_ts( $raw ) {
 	if ( empty( $raw ) ) return null;
@@ -59,9 +61,9 @@ function n_normalize_date_to_ts( $raw ) {
 }
 endif;
 
-/* ----------------------------------------
+/* ──────────────────────────────────
  * 保存時に n_event_ts を同期
- * ---------------------------------------- */
+ * ────────────────────────────────── */
 add_action( 'save_post_report', function ( $post_id ) {
 	if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) return;
 
@@ -77,10 +79,10 @@ add_action( 'save_post_report', function ( $post_id ) {
 	}
 }, 10, 1 );
 
-/* ----------------------------------------
+/* ──────────────────────────────────
  * 全角/半角カナ 非依存検索（posts_search フィルタ関数）
- *  ※このショートコード内の WP_Query 実行時だけ ON にする
- * ---------------------------------------- */
+ *  ※このショートコード内の WP_Query 実行時だけ ON
+ * ────────────────────────────────── */
 if ( ! function_exists('n_kana_search_posts_search') ) :
 function n_kana_search_posts_search( $search, $wp_query ) {
 	if ( is_admin() ) return $search;
@@ -125,9 +127,9 @@ function n_kana_search_posts_search( $search, $wp_query ) {
 }
 endif;
 
-/* ----------------------------------------
+/* ──────────────────────────────────
  * 一覧ショートコード
- * ---------------------------------------- */
+ * ────────────────────────────────── */
 function n_report_list_shortcode( $atts ) {
 	$atts = shortcode_atts(
 		[
@@ -154,7 +156,6 @@ function n_report_list_shortcode( $atts ) {
 
 	// 継承条件
 	$s            = get_query_var( 's' );
-	$maker_qv     = get_query_var( 'cpt_maker' );
 	$post_type_qv = get_query_var( 'post_type' );
 
 	// WP_Query ベース
@@ -168,35 +169,53 @@ function n_report_list_shortcode( $atts ) {
 		'suppress_filters'    => false, // フィルタを有効化可能に
 	];
 
-	// ① タクソノミー継承
-	$tax_query = [];
-	if ( $maker_qv ) {
-		$terms = is_array( $maker_qv ) ? $maker_qv : array_map( 'trim', explode( ',', (string) $maker_qv ) );
-		$tax_query[] = [
-			'taxonomy' => 'cpt_maker',
-			'field'    => 'slug',
-			'terms'    => $terms,
-		];
-	} elseif ( is_tax( 'cpt_maker' ) ) {
-		$term = get_queried_object();
-		if ( $term && ! is_wp_error( $term ) ) {
-			$tax_query[] = [
-				'taxonomy' => 'cpt_maker',
-				'field'    => 'term_id',
-				'terms'    => [ (int) $term->term_id ],
-			];
+	/* ① タクソノミー継承（report に紐づく公開タクソノミーを総ざらい） */
+	$tax_query     = ['relation' => 'AND'];
+	$persist_taxqs = []; // URL引き継ぎ用
+	$tax_objects   = get_object_taxonomies( 'report', 'objects' ); // 例: cpt_maker, category, post_tag など
+
+	foreach ( $tax_objects as $tax_name => $tax_obj ) {
+		if ( ! $tax_obj->public ) continue; // 公開のみ対象
+
+		$qv = $tax_obj->query_var ? $tax_obj->query_var : $tax_name; // 通常はスラッグと同じ
+
+		// GET/クエリ変数から拾う（配列 or カンマ区切り）
+		$val = get_query_var( $qv );
+		if ( empty( $val ) && isset( $_GET[ $tax_name ] ) ) {
+			$val = sanitize_text_field( wp_unslash( $_GET[ $tax_name ] ) ); // 念のため tax名キーでも拾う
 		}
+		if ( empty( $val ) ) continue;
+
+		$terms = is_array( $val ) ? $val : array_map( 'trim', explode( ',', (string) $val ) );
+		$terms = array_filter( $terms, static function( $v ){ return $v !== ''; } );
+		if ( ! $terms ) continue;
+
+		// すべて数値なら term_id 指定、混在/文字を含むなら slug 指定
+		$all_numeric = count( array_filter( $terms, static function( $v ){ return ctype_digit( (string) $v ); } ) ) === count( $terms );
+		$field      = $all_numeric ? 'term_id' : 'slug';
+		$terms_cast = $all_numeric ? array_map( 'intval', $terms ) : array_map( 'sanitize_title', $terms );
+
+		$tax_query[] = [
+			'taxonomy' => $tax_name,
+			'field'    => $field,
+			'terms'    => $terms_cast,
+			'operator' => 'IN', // VKFS の基本挙動（OR）に合わせる。ANDにしたい場合は 'AND'
+		];
+
+		// URL引き継ぎ（元のクエリ変数名で保持）
+		$persist_taxqs[ $qv ] = implode( ',', $terms_cast );
 	}
-	if ( ! empty( $tax_query ) ) {
+
+	if ( count( $tax_query ) > 1 ) { // relation + 1以上あれば条件あり
 		$query_args['tax_query'] = $tax_query;
 	}
 
-	// ② 検索語
+	/* ② 検索語 */
 	if ( ! is_null( $s ) && $s !== '' ) {
 		$query_args['s'] = $s;
 	}
 
-	// 並び替え
+	/* 並び替え */
 	if ( $sort === 'event' ) {
 		$query_args['meta_query'] = [
 			'relation' => 'OR',
@@ -238,15 +257,16 @@ function n_report_list_shortcode( $atts ) {
 
 	ob_start();
 
-	echo '<div class="p-reportList -table">';
+	// ★ 総件数を data-total に埋め込む（タイトル追記で利用）
+	echo '<div class="p-reportList -table" data-total="' . (int) $q->found_posts . '">';
 
-	/* 見出しクリックで昇降トグル（現URLのパスから再構成＋ホワイトリスト再付与） */
+	/* 見出しクリックで昇降トグル（パスから再構成＋ホワイトリスト再付与） */
 	$current_abs  = home_url( add_query_arg( [], $_SERVER['REQUEST_URI'] ) );
 	$current_path = strtok( $current_abs, '?' ); // パスのみ
 	$toggle_args  = [];
 	if ( ! is_null( $s ) && $s !== '' )           $toggle_args['s'] = $s;
-	if ( ! empty( $maker_qv ) )                   $toggle_args['cpt_maker'] = is_array($maker_qv) ? implode(',', $maker_qv) : (string) $maker_qv;
 	if ( ! empty( $post_type_qv ) )               $toggle_args['post_type'] = is_array($post_type_qv) ? implode(',', $post_type_qv) : (string) $post_type_qv;
+	foreach ( $persist_taxqs as $k => $v )         $toggle_args[ $k ] = $v; // ★ すべてのタクソノミー条件を引き継ぐ
 	$toggle_args['rl_sort'] = 'event';
 	$toggle_args['rl_dir']  = ( $dir === 'asc' ) ? 'desc' : 'asc';
 	$toggle_url = add_query_arg( $toggle_args, $current_path );
@@ -289,7 +309,7 @@ function n_report_list_shortcode( $atts ) {
 				}
 			}
 			if ( $event_ts ) {
-				$event_disp = wp_date( 'Y年m月d日', $event_ts );
+				$event_disp = wp_date( 'Y年m月d日', $event_ts ); // 0000年00月00日 形式
 			} else {
 				$event_disp = '—';
 			}
@@ -323,7 +343,7 @@ function n_report_list_shortcode( $atts ) {
 			echo '<td><a href="' . esc_url( get_permalink() ) . '">' . esc_html( get_the_title() ) . '</a></td>';
 			echo '<td style="text-align:center;">';
 			if ( $file_url ) {
-				echo '<a href="' . $file_url . '" class="report-clip" aria-label="受理票をダウンロード">';
+				echo '<a href="' . $file_url . '" class="report-clip" aria-label="受理票をダウンロード" target="_blank">';
 				echo '<span class="dashicons dashicons-paperclip" aria-hidden="true"></span>';
 				echo '</a>';
 			} else {
@@ -345,11 +365,10 @@ function n_report_list_shortcode( $atts ) {
 		$current_abs  = home_url( add_query_arg( [], $_SERVER['REQUEST_URI'] ) );
 		$current_path = strtok( $current_abs, '?' ); // パスのみ
 
-		// ホワイトリストで一度だけ付与
 		$persist = [];
 		if ( ! is_null( $s ) && $s !== '' )           $persist['s'] = $s;
-		if ( ! empty( $maker_qv ) )                   $persist['cpt_maker'] = is_array($maker_qv) ? implode(',', $maker_qv) : (string) $maker_qv;
 		if ( ! empty( $post_type_qv ) )               $persist['post_type'] = is_array($post_type_qv) ? implode(',', $post_type_qv) : (string) $post_type_qv;
+		foreach ( $persist_taxqs as $k => $v )         $persist[ $k ] = $v; // ★ すべてのタクソノミー条件を引き継ぐ
 		$persist['rl_sort'] = $sort;
 		$persist['rl_dir']  = $dir;
 
@@ -381,3 +400,47 @@ add_shortcode( 'report_list', 'n_report_list_shortcode' );
 add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'dashicons' );
 });
+
+/* ──────────────────────────────────
+ * フッターで件数をタイトルへ追記（ラッパの data-total を利用）
+ * - SWELL標準タイトル: h1.c-pageTitle > .c-pageTitle__inner
+ * - Gutenberg見出し:   h1.wp-block-heading（例: トップの「過去トラアーカイブ」）
+ * ────────────────────────────────── */
+add_action('wp_footer', function(){ ?>
+<script>
+(()=>{'use strict';
+  function run(){
+    // ショートコードのラッパから総件数を取得（ないページは何もしない）
+    const wrap = document.querySelector('.p-reportList.-table[data-total]');
+    if(!wrap) return;
+    const total = parseInt(wrap.getAttribute('data-total'), 10);
+    if(!Number.isFinite(total)) return;
+
+    // 1) SWELL標準のページタイトル（最優先）
+    let titleEl =
+      document.querySelector('h1.c-pageTitle .c-pageTitle__inner') ||
+      document.querySelector('.c-pageTitle .c-pageTitle__inner')   ||
+      document.querySelector('.c-pageTitle__inner');
+
+    // 2) GutenbergのH1（トップなど）。「過去トラアーカイブ」を優先して拾う。
+    if(!titleEl){
+      const candidates = Array.from(document.querySelectorAll('h1.wp-block-heading'));
+      titleEl = candidates.find(el => /^過去トラアーカイブ/.test(el.textContent.trim()))
+             || candidates[0]
+             || null;
+    }
+    if(!titleEl) return;
+
+    // 既存の（○○件）を消してから付け直す（重複防止）
+    const base = titleEl.textContent.replace(/\s*（\d{1,3}(?:,\d{3})*件）\s*$/,'');
+    titleEl.textContent = base + '（' + total.toLocaleString('ja-JP') + '件）';
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', run, { once:true });
+  }else{
+    run();
+  }
+})();
+</script>
+<?php }, 99);
