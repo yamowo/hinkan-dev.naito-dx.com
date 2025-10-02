@@ -15,14 +15,75 @@ html {
 
 :root {
   --swl-font_family: "游ゴシック体", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  --swl-font_weight: 600;
 }
 
 /* =========================================================
 //  body
 // ========================================================= */
 /* =========================================================
+// wp-core
+// ========================================================= */
+h1 {
+  margin-bottom: 1rem !important;
+  font-size: 1.5em !important;
+}
+
+[class*=page-numbers] {
+  color: #818181;
+}
+
+[class*=page-numbers].current, [class*=page-numbers]:hover {
+  background-color: var(--color_main);
+  color: #fff;
+}
+
+span.dots:hover {
+  background-color: #dedede;
+  color: #818181;
+}
+
+/* =========================================================
+//  l-main
+// ========================================================= */
+@media (min-width: 960px) {
+  .-sidebar-on .l-main {
+    width: calc(100% - var(--swl-sidebar_width) - var(--swl-sidebar_margin));
+    max-width: 100%;
+    padding: 0 var(--swl-pad_post_content, 0);
+  }
+}
+/* =========================================================
 //  p-reportList
 // ========================================================= */
+.p-reportList.-table thead td, .p-reportList.-table thead th, .p-reportList.-table .report-sort {
+  background-color: var(--thead-color--bg, var(--color_main));
+  color: var(--thead-color--txt, #fff);
+  white-space: nowrap;
+  text-align: left;
+}
+.p-reportList.-table th:nth-child(1) {
+  width: 15%; /* 発生日 */
+}
+.p-reportList.-table th:nth-child(2) {
+  width: 15%; /* メーカー */
+}
+.p-reportList.-table th:nth-child(3) {
+  width: auto; /* タイトル（残り幅） */
+}
+.p-reportList.-table th:nth-child(4) {
+  width: 8%; /* 受理票 */
+  text-align: center;
+}
+.p-reportList.-table tbody tr > td:first-child {
+  white-space: nowrap;
+}
+.p-reportList.-table a.report-clip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .p-reportList .dashicons {
   font-size: 20px; /* お好みで */
   line-height: 1;

@@ -1,0 +1,30 @@
+@charset "UTF-8";
+@use "../global" as *;
+/* =========================================================
+// wp-core
+// ========================================================= */
+
+h1 {
+  margin-bottom: 1rem!important;
+  font-size: 1.5em!important;
+}
+
+// ページネーション
+[class*=page-numbers] {
+  // color: var(--color_text);
+  color: #818181;
+}
+[class*=page-numbers].current, [class*=page-numbers]:hover {
+  background-color: var(--color_main);
+  color: #fff;
+}
+span.dots {
+  &:hover {
+    background-color: #dedede;
+    // color: var(--color_text);
+    color: #818181;
+  }
+}
+// [class*=page-numbers].current, [class*=page-numbers].dots:hover {
+//   color: #fff;
+// }

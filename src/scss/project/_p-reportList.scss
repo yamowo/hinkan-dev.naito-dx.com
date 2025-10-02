@@ -3,10 +3,47 @@
 /* =========================================================
 //  p-reportList
 // ========================================================= */
+// テーブル
+.p-reportList {
+  &.-table {
+    thead td, thead th, .report-sort {
+      background-color: var(--thead-color--bg,var(--color_main));
+      color: var(--thead-color--txt,#fff);
+      white-space: nowrap;
+      text-align: left;
+    }
+    th:nth-child(1) {
+      width: 15%; /* 発生日 */
+    }
+    th:nth-child(2) {
+      width: 15%; /* メーカー */
+    }
+    th:nth-child(3) {
+      width: auto; /* タイトル（残り幅） */
+    }
+    th:nth-child(4) {
+      width: 8%;   /* 受理票 */
+      text-align: center;
+    }
 
-// 添付アイコン
+    tbody tr > td:first-child {
+      white-space: nowrap;
+    }
+  
+    // 添付アイコン
+    a.report-clip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+
 .p-reportList .dashicons {
   font-size: 20px;   /* お好みで */
   line-height: 1;
 }
-.p-reportList td a.report-clip { display: inline-flex; align-items: center; justify-content: center; }
+.p-reportList td a.report-clip {
+  display: inline-flex; align-items: center; justify-content: center;
+}
