@@ -1,0 +1,12 @@
+@charset "UTF-8";
+@use "../global" as *;
+/* =========================================================
+//  p-reportList
+// ========================================================= */
+
+// 添付アイコン
+.p-reportList .dashicons {
+  font-size: 20px;   /* お好みで */
+  line-height: 1;
+}
+.p-reportList td a.report-clip { display: inline-flex; align-items: center; justify-content: center; }

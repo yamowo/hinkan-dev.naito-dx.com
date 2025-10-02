@@ -1,0 +1,5 @@
+.report-list .dashicons {
+  font-size: 20px;   /* お好みで */
+  line-height: 1;
+}
+.report-list td a.report-clip { display: inline-flex; align-items: center; justify-content: center; }
