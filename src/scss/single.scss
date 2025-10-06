@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /* =========================================================
-//  for Post page
+//  for Report
 // ========================================================= */
 // @use "foundation";
 // @use "core";
@@ -9,3 +9,58 @@
 // @use "component";
 // @use "dist";
 // @use "utility";
+:root {
+  --color_border--table: var(--color_main);
+}
+.single.single-report {
+  // タイトル非表示
+  .p-articleMetas.-top {
+    display: none;
+  }
+  .c-postTitle {
+    display: none;
+  }
+  .l-mainContent__inner>.post_content {
+    margin: 0 0 2em;
+  }
+  p.report-back {
+    margin-bottom: 1em;
+  }
+  .p-articleFoot {
+    // border-top: 0px dashed var(--color_border);
+    border: none!important;
+    margin: 2em 0;
+    padding-top: 2em;
+  }
+  .p-reportTable {
+    padding-top: 1px;
+    table {
+      --table-width: 800px;
+      --swl-cell1-width: 140px;
+      --swl-col2-width: 160px;
+      --swl-col3-width: 100px;
+      --swl-col4-width: 200px;
+      --swl-col5-width: 80px;
+      --color_content_bg: rgba(17, 118, 212, 0.5)!important;
+    }
+    td, th {
+      padding: .75em .75em!important;
+    }
+    th {
+      background-color: var(--color_content_bg)!important;
+    }
+    // // セル幅（中）
+    // .-wm {
+      //   width: 120px;
+      // }
+      // // セル幅（小）
+      // .-ws {
+        //   width: 90px;
+        // }
+  }
+
+  // [data-table-scrollable=both] {
+  //   padding-top: 1px;
+  // }
+      
+}

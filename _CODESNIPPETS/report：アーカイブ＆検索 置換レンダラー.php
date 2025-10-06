@@ -61,3 +61,20 @@ add_action('template_redirect', function () {
 	// テーマの既定テンプレートを読み込ませない
 	exit;
 });
+// ──────────────────────────────────
+// 一覧ページURLを sessionStorage に記録（詳細画面の「検索結果へ戻る」用）
+// ※ .p-reportList が存在するページ（ショートコード/置換レンダラーの一覧）だけ記録します
+// ──────────────────────────────────
+if ( ! defined( 'N_REPORT_SAVE_LAST_LIST_URL' ) ) {
+	define( 'N_REPORT_SAVE_LAST_LIST_URL', true );
+	add_action( 'wp_footer', function () { ?>
+<script>
+(function(){try{
+  // 一覧テーブルの存在で判定（ショートコード/置換レンダラー共通のクラス）
+  if (document.querySelector('.p-reportList')) {
+    sessionStorage.setItem('reportLastListURL', location.href);
+  }
+}catch(e){}})();
+</script>
+<?php }, 99 );
+}

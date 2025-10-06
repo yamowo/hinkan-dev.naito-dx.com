@@ -1,3 +1,42 @@
 /* =========================================================
-//  for Post page
+//  for Report
 // ========================================================= */
+:root {
+  --color_border--table: var(--color_main);
+}
+
+.single.single-report .p-articleMetas.-top {
+  display: none;
+}
+.single.single-report .c-postTitle {
+  display: none;
+}
+.single.single-report .l-mainContent__inner > .post_content {
+  margin: 0 0 2em;
+}
+.single.single-report p.report-back {
+  margin-bottom: 1em;
+}
+.single.single-report .p-articleFoot {
+  border: none !important;
+  margin: 2em 0;
+  padding-top: 2em;
+}
+.single.single-report .p-reportTable {
+  padding-top: 1px;
+}
+.single.single-report .p-reportTable table {
+  --table-width: 800px;
+  --swl-cell1-width: 140px;
+  --swl-col2-width: 160px;
+  --swl-col3-width: 100px;
+  --swl-col4-width: 200px;
+  --swl-col5-width: 80px;
+  --color_content_bg: rgba(17, 118, 212, 0.5)!important;
+}
+.single.single-report .p-reportTable td, .single.single-report .p-reportTable th {
+  padding: 0.75em 0.75em !important;
+}
+.single.single-report .p-reportTable th {
+  background-color: var(--color_content_bg) !important;
+}

@@ -53,8 +53,8 @@ add_action('wp_enqueue_scripts', function() {
   // }
 
   // for Post page
-  // if (is_single()) {
-  //   wp_enqueue_style('dev_single', get_stylesheet_directory_uri() .'/dev/css/single.min.css', [], get_file_version('/dev/css/single.min.css'));
-  // }
+  if (is_single()) {
+    wp_enqueue_style('dev_single', get_stylesheet_directory_uri() .'/dev/css/single.min.css', [], get_file_version('/dev/css/single.min.css'));
+  }
       
 }, 11);
