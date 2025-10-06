@@ -377,8 +377,11 @@ if ( ! function_exists( 'n_normalize_date_to_ts' ) ) :
           }
         }
   
-        // 現在の絞り込みクエリをリンクへ引き継ぐ
-        $persist_for_links = n_report_collect_persist_query_args( $persist_taxqs, $s, $post_type_qv );
+        // // 現在の絞り込みクエリをリンクへ引き継ぐ
+        // $persist_for_links = n_report_collect_persist_query_args( $persist_taxqs, $s, $post_type_qv );
+        // $detail_url = add_query_arg( $persist_for_links, get_permalink( $post_id ) );
+        // 修正後（s を渡さない）
+        $persist_for_links = n_report_collect_persist_query_args( $persist_taxqs, null, $post_type_qv );
         $detail_url = add_query_arg( $persist_for_links, get_permalink( $post_id ) );
   
         echo '<tr>';
