@@ -61,7 +61,7 @@ span.dots:hover {
     max-width: 100%;
     padding: 0 var(--swl-pad_post_content, 0);
   }
-  .-sidebar-on .l-main, .-sidebar-on .l-mainContent {
+  #sidebar {
     position: -webkit-sticky !important;
     position: sticky !important;
     height: -webkit-fit-content;
@@ -218,6 +218,47 @@ span.dots:hover {
   opacity: 1;
   transform: translateY(0);
   transition: transform 0.2s, opacity 0.1s ease 0.1s;
+}
+
+.vkfs__label-accordion-form.vk-filter-search .vkfs__keyword input[type=text] {
+  color: var(--color_deep01);
+  font-weight: var(--swl-font_weight);
+}
+.vkfs__label-accordion-form.vk-filter-search .vkfs__keyword .vkfs__label-name {
+  border-bottom: none;
+  margin-bottom: 0 !important;
+}
+.vkfs__label-accordion-form.vk-filter-search .vkfs__keyword .vkfs__label-accordion-content--open.vkfs__input-wrap {
+  margin-top: 0;
+  margin-bottom: 0.5rem !important;
+}
+.vkfs__label-accordion-form.vk-filter-search .vkfs__keyword .vkfs__label-name:has(.vkfs__label-accordion-trigger) .vkfs__label-accordion-trigger.vkfs__label-accordion-trigger--open::after {
+  display: none;
+}
+
+.vkfs input[type=checkbox]:after {
+  border-bottom: 3px solid var(--color_deep01);
+  border-right: 3px solid var(--color_deep01);
+}
+
+.vkfs__input-wrap--checkbox label:has(> input[type=checkbox]:checked) {
+  color: var(--color_deep01);
+}
+
+/* =========================================================
+//  embedpress
+// ========================================================= */
+.wp-block-embedpress-embedpress-pdf {
+  border: solid 1px var(--color_main);
+  padding-bottom: 1px;
+}
+
+.embedpress-embed-document-pdf {
+  height: auto !important;
+  max-height: 100% !important;
+  aspect-ratio: 1.414/1;
+  border: none;
+  padding-right: 1px;
 }
 
 /* =========================================================

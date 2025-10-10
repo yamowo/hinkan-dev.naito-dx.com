@@ -12,7 +12,12 @@
     max-width: 100%;
     padding: 0 var(--swl-pad_post_content,0);
   }
-  .-sidebar-on .l-main, .-sidebar-on .l-mainContent {
+  // .-sidebar-on .l-main, .-sidebar-on .l-mainContent {
+  //   position: sticky!important;
+  //   height: fit-content;
+  //   top: calc(var(--dev-headerH) + 30px);
+  // }
+  #sidebar {
     position: sticky!important;
     height: fit-content;
     top: calc(var(--dev-headerH) + 30px);

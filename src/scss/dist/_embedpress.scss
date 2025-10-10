@@ -1,0 +1,16 @@
+@charset "UTF-8";
+@use "../global" as *;
+/* =========================================================
+//  embedpress
+// ========================================================= */
+.wp-block-embedpress-embedpress-pdf {
+  border: solid 1px var(--color_main);
+  padding-bottom: 1px;
+}
+.embedpress-embed-document-pdf {
+  height: auto !important;
+  max-height: 100% !important;
+  aspect-ratio: 1.414/1;
+  border: none;
+  padding-right: 1px;
+}

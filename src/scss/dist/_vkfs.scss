@@ -117,3 +117,33 @@
   // transition: all .1s;
   transition: transform .2s, opacity .1s ease .1s;
 }
+.vkfs__label-accordion-form.vk-filter-search .vkfs__keyword {
+  input[type=text] {
+    color: var(--color_deep01);
+    font-weight: var(--swl-font_weight);
+  }
+  .vkfs__label-name {
+    border-bottom: none;
+    margin-bottom: 0!important;
+  }
+  .vkfs__label-accordion-content--open {
+    &.vkfs__input-wrap {
+      margin-top: 0;
+      margin-bottom: .5rem!important;
+    }
+  }
+  .vkfs__label-name:has(.vkfs__label-accordion-trigger) .vkfs__label-accordion-trigger.vkfs__label-accordion-trigger--open {
+    &::after {
+      display: none;
+    }
+  }
+}
+.vkfs input[type=checkbox]:after {
+  border-bottom: 3px solid var(--color_deep01);
+  border-right: 3px solid var(--color_deep01);
+}
+.vkfs__input-wrap--checkbox {
+  label:has(> input[type="checkbox"]:checked) {
+    color: var(--color_deep01);
+  }
+}
